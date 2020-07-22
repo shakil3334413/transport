@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Meta tags -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="swadeshparibahan.com swadeshparibahan.net swadeshparibahan  swadesh Ltd Management System LtdManagementSystem">
+  <meta name="keywords" content="swadeshparibahan.com swadeshparibahan.net swadeshparibahan swadesh Ltd Management System LtdManagementSystem">
+  <meta name="author" content="swadeshparibahan swadesh">
+  <link href="{{asset('admin/img/favicon.png')}}" rel="shortcut icon">
+  <link href="{{asset('admin/img/apple-touch-icon.png')}}" rel="apple-touch-icon">
+  <!-- /meta tags -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <title>পরিবহন</title>
+    <style> 
+    
+      @media print {
+        /* style sheet for print goes here */
+        .noprint {
+          visibility: hidden;
+        }
+        .table tr{
+            border: 1px solid #000;
+        }
+      }
+      .table td, .table th {
+        padding: .5rem;
+        vertical-align: top;
+        border: 1px solid #000;
+        font-size: 15px;
+      }
+    </style>
+</head>
+<body>
+    <div class="container">
+       <div class="row">
+            <div class="col-md-12 text-center mt-5">
+                <h4>এই মাসের আয়ের রিপোর্ট </h4>
+                <h6>পরিবহন <button onclick="myFunction()" class="btn btn-success btn-sm noprint float-right">Print</button><input type="button" class="btn btn-primary noprint btn-sm float-right mr-2"  id="btnExport" value="PDF" onclick="Export()" /></h6>
+            </div>
+            <div class="col-md-12 text-right">
+                <p>Print at:&nbsp;{{ Carbon\Carbon::parse($currentDatetime)->format('d-M-Y g:i:s A') }}</p>
+            </div>
+            <div class="col-md-12 mt-2 mb-5">
+                <table id="tblCustomers" class="table table-bordered text-center">
+                    <thead>
+                      <tr>
+                        <th scope="col">তারিখ </th>
+                        <th scope="col">কাউন্টার নাম</th>
+                        <th scope="col">শিফট</th>
+                        <th scope="col">টিকেট থেকে</th>
+                        <th scope="col">কাউন্টার নাম</th>
+                        <th scope="col">শিফট</th>
+                        <th scope="col">মালামাল থেকে</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    @foreach ($tickets as $ticket)
+                      <tr>
+                        <td scope="row">{{ Carbon\Carbon::parse($ticket->created_at)->format('d-M-Y g:i:s A') }}</td>  
+                        <td>{{ $ticket->counter_name }}</td>
+                        <td>{{ $ticket->shift }}</td>
+                        <td>{{ $ticket->taka }}&nbsp;টাকা</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    @endforeach
+                    @foreach ($acce as $acces)
+                    <tr>
+                        <td>{{ Carbon\Carbon::parse($acces->created_at)->format('d-M-Y g:i:s A') }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ $acces->counter_name }}</td>
+                        <td>{{ $acces->shift }}</td>
+                        <td>{{ $acces->ticket_price }}&nbsp;টাকা</td>
+                    </tr>
+                    @endforeach
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ $tickettaka }}&nbsp;টাকা</td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ $accessories }}&nbsp;টাকা</td>
+                    </tr>
+                    </tbody>
+                  </table>
+            </div>
+       </div>
+    </div>
+</body>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+<script>
+    function myFunction() {
+      window.print();
+    }
+</script>
+<script type="text/javascript">
+  function Export() {
+      html2canvas(document.getElementById('tblCustomers'), {
+          onrendered: function (canvas) {
+              var data = canvas.toDataURL();
+              var docDefinition = {
+                  content: [{
+                      image: data,
+                      width: 500
+                  }]
+              };
+              pdfMake.createPdf(docDefinition).download("Table.pdf");
+          }
+      });
+  }
+</script>
+</html>
